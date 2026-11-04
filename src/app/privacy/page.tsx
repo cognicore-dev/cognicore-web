@@ -13,7 +13,7 @@ export default function PrivacyPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Legal" title="Privacy policy" lead={<>Effective date: 21 October 2026</>} />
+      <PageHeader eyebrow="Legal" title="Privacy policy" lead={<>Effective date: 4 November 2026</>} />
       <div className="wrap py-12">
         <article className="prose-cc max-w-[68ch]">
           <p>
@@ -78,9 +78,10 @@ export default function PrivacyPage() {
             recalled later. Shorter conversations are not stored.
           </p>
           <p>
-            <strong>4. Technical data.</strong> Our hosting provider records standard server logs: IP address, time, the
-            address requested and the response status, plus error messages. We use one short-lived cookie (up to 10
-            minutes) during sign-in to protect it against forgery. We use no analytics, advertising or tracking cookies.
+            <strong>4. Technical data.</strong> Server logs: our web server and app record the IP address, time,
+            requested address, status code and any errors for each request. We keep them on our own server for up to 14
+            days to run and secure the service. We set one short-lived sign-in cookie (up to 10 minutes) and no
+            analytics or advertising cookies.
           </p>
 
           <h2>How we use it</h2>
@@ -95,7 +96,9 @@ export default function PrivacyPage() {
           <h2>Where it is stored, and who can see it</h2>
           <p>
             Your memories are kept in a separate database for your account, named with a one-way hash of your account
-            ID. Other users cannot read it. The service runs on servers operated by our hosting provider (currently
+            ID. Other users cannot read it. Marketplace profiles, transfer records and reputation scores are the
+            exception: they are kept in one database shared by the service, because other users need to see them. The
+            service runs on servers operated by our hosting provider (currently
             Microsoft Azure, in South Korea), so your data may be stored and processed outside your country.
           </p>
 
@@ -103,10 +106,12 @@ export default function PrivacyPage() {
           <p>We share data only in these cases:</p>
           <ul>
             <li>
-              <strong>Marketplace, when you choose.</strong> If you use the tool that lists your memories for sale,
-              other signed-in users can discover those listed memories and copy them into their own memory. Your account
-              ID and marketplace reputation are visible to them, and the transfer is recorded. Nothing is listed unless
-              you do it, and no real money is involved.
+              <strong>Marketplace, when you use it.</strong> Using the marketplace tools (listing, valuing memories or checking
+              reputation) creates a marketplace profile: your account ID, when it was created, your categories, whether
+              you are selling, your reputation score and a record of transfers. Other signed-in users can see this
+              profile. Memories you list can be found and copied by other signed-in users. Prices shown are estimates
+              only: no money changes hands and we collect no payment details. To stop selling, email us. Copies another
+              user has already received stay in their account even if you later delete yours.
             </li>
             <li>
               <strong>The AI app you use.</strong> Results of the tools you call are returned to the app you connected
@@ -115,7 +120,7 @@ export default function PrivacyPage() {
             <li>
               <strong>Services that run CogniCore:</strong> GitHub, for sign-in; our hosting provider (currently
               Microsoft Azure), which stores the data and runs the server; and Cloudflare, which provides the domain
-              name service for <code>cognicoree.tech</code>.
+              name service for <code>cognicoree.tech</code> and hosts this website.
             </li>
             <li>
               <strong>Figma, when you ask.</strong> If you sync a Figma file, the Figma access token you provide is sent
@@ -142,7 +147,7 @@ export default function PrivacyPage() {
               days.
             </li>
             <li>
-              <strong>Server logs:</strong> kept by our hosting provider for a limited period, then deleted.
+              <strong>Server logs:</strong> deleted after 14 days.
             </li>
           </ul>
           <p>If we shut the service down, we will delete the stored data.</p>
@@ -184,6 +189,12 @@ export default function PrivacyPage() {
           <p>
             If we change this policy, we will update the effective date above. If a change significantly affects how
             your data is used, we will announce it in the project&apos;s repository before it takes effect.
+          </p>
+
+          <h2>This website</h2>
+          <p>
+            This website sets no cookies and uses no analytics. It is hosted on Cloudflare, which keeps standard request
+            logs (such as IP address and requested page) to deliver and secure the site.
           </p>
 
           <h2>Contact</h2>
