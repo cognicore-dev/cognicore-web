@@ -1,9 +1,72 @@
 import Link from "next/link";
-import type { CSSProperties, ReactNode } from "react";
+import { Children, Fragment, cloneElement, isValidElement, type CSSProperties, type ReactNode } from "react";
 import { button, buttonSize, cx, type ButtonSize, type ButtonVariant } from "@/lib/styles";
 
 /** Inline style that delays a [data-reveal] element, for staggering siblings. */
 export const delay = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
+
+function splitNode(node: ReactNode, n: { i: number }): ReactNode {
+  if (typeof node === "string") {
+    return node.split(/(\s+)/).map((part, k) =>
+      part.trim() === "" ? (
+        part
+      ) : (
+        <span key={k} className="sw">
+          <span style={{ "--i": n.i++ } as CSSProperties}>{part}</span>
+        </span>
+      ),
+    );
+  }
+  if (Array.isArray(node)) return node.map((child, k) => <Fragment key={k}>{splitNode(child, n)}</Fragment>);
+  // recurse into inline text elements (the .accent spans), leave anything else (svg, components) whole
+  if (isValidElement<{ children?: ReactNode }>(node) && typeof node.type === "string" && node.type !== "svg") {
+    return cloneElement(node, undefined, splitNode(node.props.children, n));
+  }
+  return node;
+}
+
+/**
+ * Splits text into words that rise into place, one after another, when the nearest [data-reveal] ancestor is
+ * revealed. Pure markup + CSS (see .sw in globals.css), so it renders on the server and costs no JS.
+ */
+export function SplitWords({ children }: { children: ReactNode }) {
+  return <>{splitNode(children, { i: 0 })}</>;
+}
+
+/** Hand-drawn underline that draws itself in when its [data-reveal] ancestor is revealed. */
+export function Squiggle({ className }: { className?: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 300 16"
+      preserveAspectRatio="none"
+      className={cx("draw pointer-events-none absolute bottom-[0.02em] left-0 h-[0.18em] w-full", className)}
+    >
+      <path
+        d="M3 11 C 60 4, 110 4, 160 8 S 250 13, 297 5"
+        pathLength={1}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
+
+/** Wraps plain-text children in the rolling label used by buttons. */
+export function rollLabel(children: ReactNode) {
+  return Children.map(children, (child) =>
+    typeof child === "string" && child.trim() ? (
+      <span className="btn-roll">
+        <span>{child.trim()}</span>
+      </span>
+    ) : (
+      child
+    ),
+  );
+}
 
 export function ButtonLink({
   href,
@@ -19,19 +82,25 @@ export function ButtonLink({
   children: ReactNode;
 }) {
   const cls = cx(button.base, button[variant], buttonSize[size], className);
+  const label = rollLabel(children);
   return href.startsWith("http") ? (
     <a href={href} className={cls} target="_blank" rel="noreferrer">
-      {children}
+      {label}
     </a>
   ) : (
     <Link href={href} className={cls}>
-      {children}
+      {label}
     </Link>
   );
 }
 
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
-  return <p className={cx("text-[13px] font-medium text-brand", className)}>{children}</p>;
+  return (
+    <p className={cx("flex items-center gap-2.5 text-[13px] font-medium text-lime", className)}>
+      <span aria-hidden="true" className="eb-dash h-px w-5 bg-current" />
+      <span className="rv-up">{children}</span>
+    </p>
+  );
 }
 
 export function SectionHeading({
@@ -46,12 +115,16 @@ export function SectionHeading({
   center?: boolean;
 }) {
   return (
-    <div data-reveal className={cx("max-w-2xl", center && "mx-auto text-center")}>
-      {eyebrow && <Eyebrow className="mb-3">{eyebrow}</Eyebrow>}
+    <div data-reveal="words" className={cx("max-w-2xl", center && "mx-auto text-center")}>
+      {eyebrow && <Eyebrow className={cx("mb-3", center && "justify-center")}>{eyebrow}</Eyebrow>}
       <h2 className="text-[clamp(26px,3.4vw,36px)] font-semibold leading-[1.15] tracking-[-0.025em] text-ink">
-        {title}
+        <SplitWords>{title}</SplitWords>
       </h2>
-      {lead && <p className="mt-4 text-[17px] leading-relaxed text-ink-2">{lead}</p>}
+      {lead && (
+        <p className="rv-up mt-4 text-[17px] leading-relaxed text-ink-2" style={{ "--d2": "350ms" } as CSSProperties}>
+          {lead}
+        </p>
+      )}
     </div>
   );
 }
@@ -60,12 +133,17 @@ export function SectionHeading({
 export function PageHeader({ eyebrow, title, lead }: { eyebrow: string; title: string; lead: ReactNode }) {
   return (
     <div className="border-b border-line">
-      <div data-reveal className="wrap py-14 sm:py-18">
+      <div data-reveal="words" className="wrap py-14 sm:py-18">
         <Eyebrow className="mb-3">{eyebrow}</Eyebrow>
         <h1 className="max-w-3xl text-[clamp(32px,4.6vw,48px)] font-semibold leading-[1.08] tracking-[-0.03em] text-ink">
-          {title}
+          <SplitWords>{title}</SplitWords>
         </h1>
-        <div className="mt-5 max-w-2xl text-[17px] leading-relaxed text-ink-2">{lead}</div>
+        <div
+          className="rv-up mt-5 max-w-2xl text-[17px] leading-relaxed text-ink-2"
+          style={{ "--d2": "300ms" } as CSSProperties}
+        >
+          {lead}
+        </div>
       </div>
     </div>
   );

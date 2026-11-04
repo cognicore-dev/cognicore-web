@@ -3,15 +3,19 @@ export function cx(...classes: Array<string | false | null | undefined>): string
   return classes.filter(Boolean).join(" ");
 }
 
-/** Shared button styles. */
+/**
+ * Shared button styles. `.btn` and `.btn-fill` live in globals.css: on hover a colour (--fill) rises from the
+ * bottom (lime for every variant), the label rolls (see ButtonLink) and a trailing arrow nudges right.
+ */
 export const button = {
-  base: "inline-flex items-center justify-center gap-2 rounded-lg border text-sm font-medium transition-colors duration-150",
-  primary: "border-ink bg-ink text-white hover:bg-ink-2 hover:border-ink-2",
-  secondary: "border-line-strong bg-surface text-ink hover:border-ink-3",
+  base: "btn inline-flex items-center justify-center gap-2 rounded-lg border text-sm font-medium",
+  primary: "btn-fill border-ink bg-ink text-white [--fill:var(--color-lime)] hover:border-lime hover:text-ink",
+  secondary: "btn-fill border-line-strong bg-surface text-ink [--fill:var(--color-lime)] hover:border-lime",
   ghost: "border-transparent text-ink-2 hover:text-ink",
   /* for dark sections */
-  inverse: "border-white bg-white text-ink hover:border-code-ink hover:bg-code-ink",
-  outlineDark: "border-code-line bg-transparent text-code-ink hover:border-code-dim",
+  inverse: "btn-fill border-white bg-white text-ink [--fill:var(--color-lime)] hover:border-lime",
+  outlineDark:
+    "btn-fill border-code-line bg-transparent text-code-ink [--fill:var(--color-lime)] hover:border-lime hover:text-ink",
 } as const;
 
 export type ButtonVariant = Exclude<keyof typeof button, "base">;

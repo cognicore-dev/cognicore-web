@@ -73,6 +73,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         >
           Skip to content
         </a>
+        <div className="scroll-progress" aria-hidden="true" />
         <Header />
         <main id="main" className="flex-1">
           {children}

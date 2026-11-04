@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { AppsMarquee } from "@/components/AppsMarquee";
 import { BriefCard } from "@/components/BriefCard";
@@ -5,7 +6,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { CountUp } from "@/components/CountUp";
 import { StoryScroll } from "@/components/StoryScroll";
 import { ArrowRight, Check } from "@/components/icons";
-import { ButtonLink, SectionHeading, delay } from "@/components/ui";
+import { ButtonLink, SectionHeading, SplitWords, Squiggle, delay } from "@/components/ui";
 import { links, mcp } from "@/lib/site";
 
 const connectCards = [
@@ -102,11 +103,18 @@ export default function HomePage() {
               <ArrowRight className="size-3 text-ink-3 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <h1
-              data-reveal
+              data-reveal="words"
               style={delay(80)}
-              className="text-[clamp(40px,6vw,66px)] font-semibold leading-[1.02] tracking-[-0.035em] text-ink"
+              className="text-[clamp(40px,6vw,66px)] font-semibold leading-[1.06] tracking-[-0.035em] text-ink"
             >
-              Stop <span className="accent pr-1 text-[1.08em]">re-explaining</span> yourself to AI.
+              <SplitWords>
+                Stop{" "}
+                <span className="accent relative pr-1 text-[1.08em]">
+                  re-explaining
+                  <Squiggle />
+                </span>{" "}
+                yourself to AI.
+              </SplitWords>
             </h1>
             <p data-reveal style={delay(160)} className="mt-6 max-w-[34rem] text-lg leading-relaxed text-ink-2">
               CogniCore is a shared memory for Claude, ChatGPT and coding agents. Tell it once — your project, your
@@ -169,6 +177,7 @@ export default function HomePage() {
                 key={card.title}
                 href={card.href}
                 data-reveal
+                data-spotlight
                 style={delay(i * 110)}
                 className="group flex flex-col rounded-2xl border border-line bg-paper p-6 transition-[border-color,box-shadow,translate] duration-300 hover:-translate-y-1 hover:border-line-strong hover:shadow-[0_18px_40px_-20px_rgba(18,18,17,.25)]"
               >
@@ -218,7 +227,7 @@ export default function HomePage() {
               style={delay(i * 90)}
               className="flex gap-3 text-[15px] leading-relaxed text-ink-2"
             >
-              <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand">
+              <span className="pop mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-brand-soft text-brand">
                 <Check className="size-3" />
               </span>
               {item}
@@ -228,7 +237,7 @@ export default function HomePage() {
       </section>
 
       {/* Developers */}
-      <section className="relative overflow-hidden bg-code text-code-ink">
+      <section className="on-dark relative overflow-hidden bg-code text-code-ink">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(var(--color-code-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-code-line)_1px,transparent_1px)] [background-size:48px_48px] opacity-40 [mask-image:radial-gradient(ellipse_60%_70%_at_80%_40%,black,transparent)]"
@@ -238,16 +247,21 @@ export default function HomePage() {
           className="pointer-events-none absolute -right-40 top-10 size-[520px] rounded-full bg-[radial-gradient(closest-side,rgb(154_230_0/0.1),transparent)]"
         />
         <div className="wrap relative grid gap-12 py-24 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
-          <div data-reveal>
-            <p className="mb-3 text-[13px] font-medium text-code-green">For developers</p>
+          <div data-reveal="words">
+            <p className="mb-3 flex items-center gap-2.5 text-[13px] font-medium text-lime">
+              <span aria-hidden="true" className="eb-dash h-px w-5 bg-current" />
+              For developers
+            </p>
             <h2 className="text-[clamp(26px,3.4vw,36px)] font-semibold leading-[1.15] tracking-[-0.025em] text-white">
-              Close Claude Code. Open Codex. <span className="accent text-code-green">Keep going.</span>
+              <SplitWords>
+                Close Claude Code. Open Codex. <span className="accent">Keep going.</span>
+              </SplitWords>
             </h2>
-            <p className="mt-4 text-[17px] leading-relaxed text-code-dim">
+            <p className="rv-up mt-4 text-[17px] leading-relaxed text-code-dim">
               Hooks save each session from the agent&apos;s own transcript and hand the next one a short brief: the
               goal, open tasks, decisions with their reasons, and exact values like ticket IDs and versions.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="rv-up mt-8 flex flex-wrap gap-3" style={{ "--d2": "450ms" } as CSSProperties}>
               <ButtonLink href="/developers" variant="inverse">
                 Read the docs
               </ButtonLink>
@@ -314,7 +328,7 @@ export default function HomePage() {
         />
         <div data-reveal style={delay(120)} className="divide-y divide-line border-y border-line">
           {faqs.map((f) => (
-            <details key={f.q} className="group py-5 [&_summary::-webkit-details-marker]:hidden">
+            <details key={f.q} className="faq group py-5 [&_summary::-webkit-details-marker]:hidden">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-medium text-ink">
                 {f.q}
                 <span
@@ -334,7 +348,7 @@ export default function HomePage() {
       <section className="wrap">
         <div
           data-reveal="scale"
-          className="relative overflow-hidden rounded-3xl bg-ink px-8 py-14 text-white sm:px-14 sm:py-16"
+          className="on-dark relative overflow-hidden rounded-3xl bg-ink px-8 py-14 text-white sm:px-14 sm:py-16"
         >
           <div
             aria-hidden="true"
@@ -343,7 +357,13 @@ export default function HomePage() {
           <div className="relative flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-[clamp(28px,3.6vw,40px)] font-semibold leading-[1.1] tracking-[-0.025em]">
-                Give your next chat a <span className="accent text-lime">head start.</span>
+                <SplitWords>
+                  Give your next chat a{" "}
+                  <span className="accent relative">
+                    head start.
+                    <Squiggle />
+                  </span>
+                </SplitWords>
               </h2>
               <p className="mt-3 text-white/65">Setup takes about a minute. No credit card, no waitlist.</p>
             </div>

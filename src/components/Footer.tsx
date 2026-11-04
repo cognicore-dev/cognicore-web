@@ -33,7 +33,7 @@ const columns = [
 ];
 
 function FooterLink({ href, label }: { href: string; label: string }) {
-  const cls = "text-ink-3 transition-colors hover:text-ink";
+  const cls = "link-u text-ink-3 hover:text-ink";
   return href.startsWith("http") ? (
     <a href={href} className={cls} target="_blank" rel="noreferrer">
       {label}

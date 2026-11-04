@@ -44,7 +44,8 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={cx("transition-colors", isActive(item.href) ? "text-ink" : "text-ink-3 hover:text-ink")}
+                aria-current={isActive(item.href) ? "page" : undefined}
+                className={cx("link-u", isActive(item.href) ? "text-ink" : "text-ink-3 hover:text-ink")}
               >
                 {item.label}
               </Link>
@@ -62,7 +63,9 @@ export function Header() {
               GitHub
             </a>
             <Link href="/connect" className={cx(button.base, button.primary, "px-4 py-2")}>
-              Get started
+              <span className="btn-roll">
+                <span>Get started</span>
+              </span>
             </Link>
           </div>
 

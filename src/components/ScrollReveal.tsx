@@ -40,9 +40,29 @@ export function ScrollReveal() {
     const mo = new MutationObserver(scan);
     mo.observe(document.body, { childList: true, subtree: true });
 
+    // Cursor spotlight for [data-spotlight] cards: one passive listener, at most one style write per frame.
+    let frame = 0;
+    let last: PointerEvent | null = null;
+    const onMove = (e: PointerEvent) => {
+      last = e;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const card = (last?.target as Element | null)?.closest?.<HTMLElement>("[data-spotlight]");
+        if (!card || !last) return;
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${last.clientX - r.left}px`);
+        card.style.setProperty("--my", `${last.clientY - r.top}px`);
+      });
+    };
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (fine) document.addEventListener("pointermove", onMove, { passive: true });
+
     return () => {
       io.disconnect();
       mo.disconnect();
+      if (fine) document.removeEventListener("pointermove", onMove);
+      cancelAnimationFrame(frame);
     };
   }, []);
 

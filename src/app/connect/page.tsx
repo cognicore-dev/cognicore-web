@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { CodeBlock, CopyField } from "@/components/CodeBlock";
-import { Callout, DocLayout, PageHeader, Path, Step, Steps } from "@/components/ui";
+import { Callout, DocLayout, PageHeader, Path, Step, Steps, delay } from "@/components/ui";
 import { links, mcp } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -72,7 +72,7 @@ export default function ConnectPage() {
 
       <DocLayout toc={toc}>
         {/* Announcement */}
-        <div className="rounded-2xl border border-brand/25 bg-brand-soft p-6 sm:p-7">
+        <div data-reveal className="rounded-2xl border border-brand/25 bg-brand-soft p-6 sm:p-7">
           <p className="text-xs font-medium uppercase tracking-wider text-brand">Coming soon</p>
           <h2 className="mt-2 text-xl font-semibold tracking-[-0.01em] text-ink">
             One-click install in Claude and ChatGPT
@@ -86,11 +86,14 @@ export default function ConnectPage() {
         </div>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          {pickers.map((p) => (
+          {pickers.map((p, i) => (
             <a
               key={p.id}
               href={`#${p.id}`}
-              className="rounded-xl border border-line bg-surface p-4 transition-colors hover:border-line-strong"
+              data-reveal
+              data-spotlight
+              style={delay(120 + i * 90)}
+              className="rounded-xl border border-line bg-surface p-4 hover:-translate-y-0.5 hover:border-line-strong hover:shadow-[0_12px_30px_-18px_rgba(18,18,17,.3)]"
             >
               <p className="font-medium text-ink">{p.title}</p>
               <p className="mt-0.5 text-sm text-ink-3">{p.sub}</p>

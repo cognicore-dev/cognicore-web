@@ -468,7 +468,11 @@ cognicore ui           # NEXUS dashboard`}
             <a href="https://www.linkedin.com/in/durvesh-bhadgaonkar" target="_blank" rel="noreferrer">
               Durvesh Bhadgaonkar
             </a>{" "}
-            and Hassaan Tole.
+            and{" "}
+            <a href="https://www.linkedin.com/in/hassaan-tole-907441293/" target="_blank" rel="noreferrer">
+              Hassaan Tole
+            </a>
+            .
           </p>
           <ul>
             <li>
