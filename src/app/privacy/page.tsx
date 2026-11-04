@@ -13,7 +13,7 @@ export default function PrivacyPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Legal" title="Privacy policy" lead={<>Effective date: 4 November 2026</>} />
+      <PageHeader eyebrow="Legal" title="Privacy policy" lead={<>Effective date: 5 November 2026</>} />
       <div className="wrap py-12">
         <article className="prose-cc max-w-[68ch]">
           <p>
@@ -29,8 +29,9 @@ export default function PrivacyPage() {
           <h2>In short</h2>
           <ul>
             <li>
-              You sign in with GitHub. We receive your <strong>GitHub user ID and username</strong> only, not your
-              email, repositories or private data.
+              You sign in with Google or GitHub. With Google we receive your <strong>Google account ID</strong> only,
+              not your name, email, contacts, Drive or any other Google data. With GitHub we receive your{" "}
+              <strong>GitHub user ID and username</strong> only, not your email, repositories or private data.
             </li>
             <li>
               We store <strong>what you ask CogniCore to remember</strong>, in a database that belongs to your account
@@ -45,11 +46,22 @@ export default function PrivacyPage() {
 
           <h2>What we collect</h2>
           <p>
-            <strong>1. Your GitHub identity.</strong> When you connect, you sign in through GitHub. We request no GitHub
-            permissions beyond your public profile, and we read two things: your numeric GitHub user ID and your
-            username. Your account inside CogniCore is identified as <code>github:&lt;your user ID&gt;</code>. GitHub
-            gives us a temporary access token during sign-in; we use it once to read your ID and username, and do not
-            store it.
+            <strong>1. Your sign-in identity.</strong> When you connect, you sign in with Google or with GitHub. The two
+            are kept apart: signing in with each gives you two separate CogniCore accounts, and we never link them,
+            including by email address.
+          </p>
+          <p>
+            If you sign in with Google: we ask Google only to confirm who you are (the openid permission), not for your
+            name, email address, profile picture, contacts, Drive or any other data. Google tells us one thing: the
+            numeric ID of your Google account, which does not reveal your name or email address. Your account inside
+            CogniCore is identified as <code>google:&lt;that ID&gt;</code>. Google also gives us temporary tokens during
+            sign-in; we use them once to confirm the ID and do not store them.
+          </p>
+          <p>
+            If you sign in with GitHub: we request no GitHub permissions beyond your public profile, and we read two
+            things: your numeric GitHub user ID and your username. Your account inside CogniCore is identified as{" "}
+            <code>github:&lt;your user ID&gt;</code>. GitHub gives us a temporary access token during sign-in; we use it
+            once to read your ID and username, and do not store it.
           </p>
           <p>
             <strong>2. What you store through CogniCore&apos;s tools.</strong> This is the content the service exists to
@@ -98,29 +110,30 @@ export default function PrivacyPage() {
             Your memories are kept in a separate database for your account, named with a one-way hash of your account
             ID. Other users cannot read it. Marketplace profiles, transfer records and reputation scores are the
             exception: they are kept in one database shared by the service, because other users need to see them. The
-            service runs on servers operated by our hosting provider (currently
-            Microsoft Azure, in South Korea), so your data may be stored and processed outside your country.
+            service runs on servers operated by our hosting provider (currently Microsoft Azure, in South Korea), so
+            your data may be stored and processed outside your country.
           </p>
 
           <h2>Sharing</h2>
           <p>We share data only in these cases:</p>
           <ul>
             <li>
-              <strong>Marketplace, when you use it.</strong> Using the marketplace tools (listing, valuing memories or checking
-              reputation) creates a marketplace profile: your account ID, when it was created, your categories, whether
-              you are selling, your reputation score and a record of transfers. Other signed-in users can see this
-              profile. Memories you list can be found and copied by other signed-in users. Prices shown are estimates
-              only: no money changes hands and we collect no payment details. To stop selling, email us. Copies another
-              user has already received stay in their account even if you later delete yours.
+              <strong>Marketplace, when you use it.</strong> Using the marketplace tools (listing, valuing memories or
+              checking reputation) creates a marketplace profile: your account ID, when it was created, your categories,
+              whether you are selling, your reputation score and a record of transfers. Other signed-in users can see
+              this profile. Memories you list can be found and copied by other signed-in users. Prices shown are
+              estimates only: no money changes hands and we collect no payment details. To stop selling, email us.
+              Copies another user has already received stay in their account even if you later delete yours.
             </li>
             <li>
               <strong>The AI app you use.</strong> Results of the tools you call are returned to the app you connected
               (such as Claude or ChatGPT), and that app&apos;s own privacy policy applies to them.
             </li>
             <li>
-              <strong>Services that run CogniCore:</strong> GitHub, for sign-in; our hosting provider (currently
-              Microsoft Azure), which stores the data and runs the server; and Cloudflare, which provides the domain
-              name service for <code>cognicoree.tech</code> and hosts this website.
+              <strong>Services that run CogniCore:</strong> Google and GitHub, for sign-in, depending on which you
+              choose; our hosting provider (currently Microsoft Azure), which stores the data and runs the server; and
+              Cloudflare, which provides the domain name service for <code>cognicoree.tech</code> and hosts this
+              website.
             </li>
             <li>
               <strong>Figma, when you ask.</strong> If you sync a Figma file, the Figma access token you provide is sent
@@ -159,13 +172,17 @@ export default function PrivacyPage() {
               <code>cognicore_forget</code> tool).
             </li>
             <li>
-              <strong>Delete or export everything:</strong> email us at {mail} from, or mentioning, the GitHub account
-              you signed in with. We will act on the request within 30 days.
+              <strong>Delete or export everything:</strong> email us at {mail}. If you signed in with GitHub, write
+              from, or mention, that GitHub account. If you signed in with Google, we do not receive your email address
+              and cannot look your account up by it, so tell us and we will work with you to identify the account. We
+              will act on the request within 30 days.
             </li>
             <li>
-              <strong>Disconnect:</strong> remove CogniCore in your AI app&apos;s connector settings, and revoke its
-              access on GitHub under <em>Settings → Applications → Authorized OAuth Apps</em>. Disconnecting stops
-              access but does not delete stored memories; ask us if you want them deleted.
+              <strong>Disconnect:</strong> remove CogniCore in your AI app&apos;s connector settings. You can also
+              remove its access in your Google Account under{" "}
+              <em>Security → Your connections to third-party apps &amp; services</em>, or on GitHub under{" "}
+              <em>Settings → Applications → Authorized OAuth Apps</em>. Disconnecting stops access but does not delete
+              stored memories; ask us if you want them deleted.
             </li>
           </ul>
           <p>
@@ -183,7 +200,7 @@ export default function PrivacyPage() {
           </p>
 
           <h2>Children</h2>
-          <p>CogniCore is not intended for children under 13, and GitHub accounts require users to be at least 13.</p>
+          <p>CogniCore is not intended for children under 13.</p>
 
           <h2>Changes</h2>
           <p>
