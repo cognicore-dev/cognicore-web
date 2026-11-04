@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cognicore-web",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    { "pattern": "cognicoree.tech", "custom_domain": true },
+    { "pattern": "www.cognicoree.tech", "custom_domain": true }
+  ]
+}
