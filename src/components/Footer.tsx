@@ -1,35 +1,96 @@
-import { footerColumns } from "@/lib/content";
-import { Logo } from "./Logo";
+import Link from "next/link";
+import { links, mcp, site } from "@/lib/site";
+import { LogoMark } from "./Logo";
+
+const columns = [
+  {
+    heading: "Product",
+    items: [
+      { href: "/connect", label: "Connect to Claude" },
+      { href: "/connect#chatgpt", label: "Connect to ChatGPT" },
+      { href: "/connect#coding-agents", label: "Claude Code & Codex" },
+      { href: "/developers#benchmarks", label: "Benchmarks" },
+    ],
+  },
+  {
+    heading: "Developers",
+    items: [
+      { href: "/developers", label: "Documentation" },
+      { href: links.docs.tools, label: "MCP tool reference" },
+      { href: links.pypi, label: "PyPI package" },
+      { href: links.changelog, label: "Changelog" },
+    ],
+  },
+  {
+    heading: "Project",
+    items: [
+      { href: links.github, label: "GitHub" },
+      { href: links.issues, label: "Report an issue" },
+      { href: links.linkedin, label: "LinkedIn" },
+      { href: "/privacy", label: "Privacy policy" },
+    ],
+  },
+];
+
+function FooterLink({ href, label }: { href: string; label: string }) {
+  const cls = "text-ink-3 transition-colors hover:text-ink";
+  return href.startsWith("http") ? (
+    <a href={href} className={cls} target="_blank" rel="noreferrer">
+      {label}
+    </a>
+  ) : (
+    <Link href={href} className={cls}>
+      {label}
+    </Link>
+  );
+}
 
 export function Footer() {
   return (
-    <footer className="border-t border-line bg-bg-2">
-      <div className="wrap">
-        <div className="grid grid-cols-2 gap-10 pb-10 pt-16 min-[761px]:grid-cols-[1.4fr_repeat(3,1fr)]">
-          <div>
-            <Logo />
-            <p className="mt-3.5 max-w-[32ch] text-sm text-ink-dim">
-              A shared memory layer for AI coding agents. Built so context outlives the session.
-            </p>
+    <footer className="mt-24 border-t border-line bg-surface">
+      <div className="wrap grid gap-12 py-14 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div className="max-w-xs">
+          <div className="flex items-center gap-2 font-semibold text-ink">
+            <LogoMark className="size-5" />
+            CogniCore
           </div>
-          {footerColumns.map((col) => (
-            <div key={col.heading}>
-              <h5 className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[.08em] text-ink-dim">{col.heading}</h5>
-              {col.links.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="cursor-target block py-1.5 text-sm text-ink opacity-80 hover:text-lime hover:opacity-100 hover:[-webkit-text-stroke:.4px_var(--color-ink)]"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          ))}
+          <p className="mt-3 text-sm leading-relaxed text-ink-3">
+            Open-source memory for Claude, ChatGPT and coding agents. MIT licensed.
+          </p>
+          <a
+            href={mcp.health}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-flex items-center gap-2 text-xs text-ink-3 hover:text-ink"
+          >
+            <span className="size-1.5 rounded-full bg-[#3fae5a]" aria-hidden="true" />
+            Hosted server status
+          </a>
         </div>
-        <div className="flex flex-wrap justify-between gap-2.5 border-t border-line py-[18px] font-mono text-[11px] text-ink-dim">
-          <span>© 2026 COGNICORE — PROTOTYPE BUILD</span>
-          <span>MADE WITH ANYFLOW-STYLE MOTION</span>
+        {columns.map((col) => (
+          <div key={col.heading}>
+            <h3 className="text-xs font-medium tracking-wide text-ink">{col.heading}</h3>
+            <ul className="mt-4 space-y-2.5 text-sm">
+              {col.items.map((item) => (
+                <li key={item.label}>
+                  <FooterLink {...item} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className="border-t border-line">
+        <div className="wrap flex flex-col gap-2 py-5 text-xs text-ink-3 sm:flex-row sm:justify-between">
+          <p>
+            © 2026 cognicore-dev · v{site.version} ·{" "}
+            <a href={links.license} className="hover:text-ink" target="_blank" rel="noreferrer">
+              MIT License
+            </a>
+          </p>
+          <a href={`mailto:${links.email}`} className="hover:text-ink">
+            {links.email}
+          </a>
         </div>
       </div>
     </footer>
