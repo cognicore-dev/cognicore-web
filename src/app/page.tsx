@@ -1,13 +1,25 @@
 import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AppsMarquee } from "@/components/AppsMarquee";
 import { BriefCard } from "@/components/BriefCard";
 import { CodeBlock } from "@/components/CodeBlock";
 import { CountUp } from "@/components/CountUp";
 import { StoryScroll } from "@/components/StoryScroll";
+import { FaqList } from "@/components/aeo/FaqList";
+import { JsonLd } from "@/components/aeo/JsonLd";
 import { ArrowRight, Check } from "@/components/icons";
 import { ButtonLink, SectionHeading, SplitWords, Squiggle, delay } from "@/components/ui";
-import { links, mcp } from "@/lib/site";
+import { homeFaqs } from "@/lib/faq";
+import { faqLd, pageMetadata, softwareLd } from "@/lib/seo";
+import { bench, install, links, mcp, site } from "@/lib/site";
+
+export const metadata: Metadata = pageMetadata({
+  title: `${site.name} — ${site.tagline}`,
+  absoluteTitle: true,
+  description: site.description,
+  path: "",
+});
 
 const connectCards = [
   {
@@ -42,9 +54,9 @@ const privacy = [
 
 const stats = [
   {
-    value: "~450",
+    value: bench.handoff.briefTokensApprox,
     unit: "tokens",
-    label: "for the brief a new session starts with",
+    label: `for the brief a new session starts with (${bench.handoff.briefTokens} measured)`,
   },
   {
     value: "~1",
@@ -63,28 +75,10 @@ const stats = [
   },
 ];
 
-const faqs = [
-  {
-    q: "Do I need to know how to code?",
-    a: "No. Connecting CogniCore to Claude or ChatGPT is done in the app's settings: you paste one link and sign in. The terminal setup is only for people using coding agents.",
-  },
-  {
-    q: "Why do I sign in with GitHub?",
-    a: "GitHub sign-in gives each person a private, separate memory without us storing passwords. We only read your GitHub ID and username. A GitHub account is free to create.",
-  },
-  {
-    q: "What does it cost?",
-    a: "CogniCore is free and open source under the MIT license. Claude and ChatGPT may need a plan that allows custom connectors or apps; the setup guide notes which.",
-  },
-  {
-    q: "Isn't this the same as the memory built into ChatGPT or Claude?",
-    a: "Built-in memory stays inside one app. CogniCore is shared: what you save in Claude is there in ChatGPT, Claude Code and Codex too, and you can see and delete exactly what's stored.",
-  },
-];
-
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={[softwareLd, faqLd(homeFaqs)]} />
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div
@@ -272,7 +266,7 @@ export default function HomePage() {
           </div>
           <div data-reveal style={delay(150)} className="min-w-0">
             <CodeBlock
-              code={`pipx install "cognicore-env[mcp]"\ncognicore install    # sets up Claude Code and Codex`}
+              code={`${install.pipx.split("   #")[0]}\ncognicore install    # sets up Claude Code and Codex`}
             />
             <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8">
               {stats.map((s) => (
@@ -289,7 +283,7 @@ export default function HomePage() {
               ))}
             </dl>
             <p className="mt-6 text-xs text-code-dim">
-              Measured on real sessions against claude-mem 15.7.0.{" "}
+              Measured on real sessions against claude-mem 15.7.0 ({bench.handoff.date}).{" "}
               <Link href="/developers#benchmarks" className="underline underline-offset-2 hover:text-code-ink">
                 See the method
               </Link>
@@ -327,20 +321,7 @@ export default function HomePage() {
           }
         />
         <div data-reveal style={delay(120)} className="divide-y divide-line border-y border-line">
-          {faqs.map((f) => (
-            <details key={f.q} className="faq group py-5 [&_summary::-webkit-details-marker]:hidden">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-medium text-ink">
-                {f.q}
-                <span
-                  aria-hidden="true"
-                  className="text-xl font-light leading-none text-ink-3 transition-transform group-open:rotate-45"
-                >
-                  +
-                </span>
-              </summary>
-              <p className="mt-3 pr-8 text-[15px] leading-relaxed text-ink-2">{f.a}</p>
-            </details>
-          ))}
+          <FaqList items={homeFaqs} />
         </div>
       </section>
 

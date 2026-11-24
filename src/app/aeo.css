@@ -1,0 +1,69 @@
+/* Motion for the guide components (src/components/aeo). Uses the tokens and easings from globals.css.
+   Every effect waits for the [data-reveal] ancestor to get .is-in (see ScrollReveal.tsx), like the rest of the site. */
+
+/* AnswerBox: the lime rule draws down, then the text follows. */
+.answer-rule {
+  transform-origin: top;
+  transition: transform 0.9s var(--ease-out-expo) var(--d, 0ms);
+}
+html.js [data-reveal]:not(.is-in) .answer-rule {
+  transform: scaleY(0);
+}
+
+/* Steps that appear one after another. Wrap <Steps> in <div data-reveal="words" className="steps-stagger">. */
+.steps-stagger li {
+  transition:
+    opacity 0.7s var(--ease-out-expo) calc(var(--d, 0ms) + var(--i, 0) * 110ms),
+    transform 0.9s var(--ease-out-expo) calc(var(--d, 0ms) + var(--i, 0) * 110ms);
+}
+.steps-stagger li:nth-child(2) {
+  --i: 1;
+}
+.steps-stagger li:nth-child(3) {
+  --i: 2;
+}
+.steps-stagger li:nth-child(4) {
+  --i: 3;
+}
+.steps-stagger li:nth-child(n + 5) {
+  --i: 4;
+}
+html.js [data-reveal]:not(.is-in) .steps-stagger li,
+html.js .steps-stagger[data-reveal]:not(.is-in) li {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* TokenBars: each bar grows to its width (--w, 0 to 1) from the left. Transform only, so no layout shift. */
+.token-bar {
+  transform-origin: left;
+  transform: scaleX(var(--w, 1));
+  transition: transform 1.2s var(--ease-out-expo) calc(var(--d, 0ms) + 200ms + var(--i, 0) * 140ms);
+}
+html.js [data-reveal]:not(.is-in) .token-bar {
+  transform: scaleX(0);
+}
+
+/* HandoffDiagram: the boxes fade up in order; the dashed handoff line uses animate-flow. */
+.diagram-node {
+  transition:
+    opacity 0.6s var(--ease-out-expo) calc(var(--d, 0ms) + var(--i, 0) * 160ms),
+    transform 0.8s var(--ease-out-expo) calc(var(--d, 0ms) + var(--i, 0) * 160ms);
+}
+html.js [data-reveal]:not(.is-in) .diagram-node {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] .answer-rule,
+  html.js [data-reveal] .steps-stagger li,
+  html.js .steps-stagger[data-reveal] li,
+  html.js [data-reveal] .diagram-node {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  html.js [data-reveal] .token-bar {
+    transform: scaleX(var(--w, 1)) !important;
+  }
+}

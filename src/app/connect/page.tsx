@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { CodeBlock, CopyField } from "@/components/CodeBlock";
 import { Callout, DocLayout, PageHeader, Path, Step, Steps, delay } from "@/components/ui";
-import { links, mcp } from "@/lib/site";
+import { pageMetadata } from "@/lib/seo";
+import { install, links, mcp } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Connect CogniCore to Claude and ChatGPT",
   description:
-    "Step-by-step setup for Claude (web, desktop and mobile), ChatGPT, Claude Code, Codex, Cursor and VS Code. CogniCore is coming to the Claude and ChatGPT app directories.",
-};
+    "Step-by-step setup for Claude (web, desktop and mobile), ChatGPT, Claude Code, Codex, Cursor and VS Code. Paste one link and sign in with Google or GitHub.",
+  path: "/connect",
+});
 
 const toc = [
   { id: "before-you-start", label: "Before you start" },
@@ -110,19 +112,11 @@ export default function ConnectPage() {
           >
             <ul className="space-y-6">
               <li>
-                <p className="font-medium text-ink">A GitHub account</p>
+                <p className="font-medium text-ink">A Google or GitHub account</p>
                 <p className="mt-1 text-[15px] leading-relaxed text-ink-2">
-                  CogniCore uses GitHub to sign you in, so your memory is private to you and there&apos;s no new
-                  password to manage. We only read your GitHub ID and username. Don&apos;t have one?{" "}
-                  <a
-                    href={links.githubSignup}
-                    className="text-brand underline underline-offset-[3px]"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Create a free account
-                  </a>{" "}
-                  first.
+                  CogniCore signs you in with Google or GitHub, so your memory is private to you and there&apos;s no new
+                  password to manage. With Google we receive only your Google account ID; with GitHub, only your GitHub
+                  ID and username. The two are separate accounts, so use the same one in every app.
                 </p>
               </li>
               <li>
@@ -178,10 +172,10 @@ export default function ConnectPage() {
                   </dd>
                 </dl>
               </Step>
-              <Step title="Click Connect and sign in with GitHub">
+              <Step title="Click Connect and sign in with Google or GitHub">
                 <p>
-                  A CogniCore page opens. Continue to GitHub, click Authorize, and you&apos;ll be sent back to Claude.
-                  CogniCore now shows as connected.
+                  A CogniCore page opens. Continue with Google or with GitHub, approve the sign-in, and you&apos;ll be
+                  sent back to Claude. CogniCore now shows as connected.
                 </p>
               </Step>
               <Step title="Turn it on in a chat">
@@ -243,8 +237,10 @@ export default function ConnectPage() {
                 </dl>
                 <p>Confirm that you trust the app, then click Create.</p>
               </Step>
-              <Step title="Sign in with GitHub">
-                <p>ChatGPT opens the CogniCore sign-in page. Continue to GitHub and click Authorize.</p>
+              <Step title="Sign in with Google or GitHub">
+                <p>
+                  ChatGPT opens the CogniCore sign-in page. Continue with Google or with GitHub and approve the sign-in.
+                </p>
               </Step>
               <Step title="Use it in a chat">
                 <p>
@@ -314,7 +310,7 @@ export default function ConnectPage() {
               After the <code className="font-mono text-[13px] text-ink">pipx</code> line, you can install the plugin
               from inside Claude Code instead:
             </p>
-            <CodeBlock label="claude code" code="/plugin install cognicore --marketplace cognicore-dev/cognicore-env" />
+            <CodeBlock label="claude code" code={`${install.pluginMarketplace}\n${install.plugin}`} />
             <p className="mb-4 mt-6 text-[15px] leading-relaxed text-ink-2">
               Or connect the hosted server, with nothing installed locally:
             </p>
@@ -324,11 +320,12 @@ export default function ConnectPage() {
           <GuideSection
             id="other-apps"
             title="Cursor, VS Code and other apps"
-            lead="Any app that supports remote MCP servers can use the hosted connector. Add the URL and sign in with GitHub when prompted."
+            lead="Any app that supports remote MCP servers can use the hosted connector. Add the URL and sign in with Google or GitHub when prompted."
           >
             <h3 className="font-semibold text-ink">Cursor</h3>
             <p className="mb-4 mt-2 text-[15px] text-ink-2">
-              Add to <code className="font-mono text-[13px] text-ink">.cursor/mcp.json</code>:
+              Add to <code className="font-mono text-[13px] text-ink">.cursor/mcp.json</code>, then sign in when Cursor
+              opens the browser:
             </p>
             <CodeBlock
               label="json"
@@ -370,24 +367,15 @@ export default function ConnectPage() {
                   q: "The connection fails or keeps loading",
                   a: (
                     <>
-                      Check the{" "}
-                      <a
-                        href={mcp.health}
-                        className="text-brand underline underline-offset-[3px]"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        server status
-                      </a>
-                      . If it says <code className="font-mono text-[13px]">&quot;ok&quot;</code>, remove CogniCore from
-                      your connectors and add it again, making sure the URL ends in{" "}
-                      <code className="font-mono text-[13px]">/mcp/stream</code>.
+                      Remove CogniCore from your connectors and add it again, making sure the URL ends in{" "}
+                      <code className="font-mono text-[13px]">/mcp/stream</code>. If it still fails, email us or open an
+                      issue below.
                     </>
                   ),
                 },
                 {
                   q: "My memories are missing in another app",
-                  a: "Memories belong to the GitHub account you signed in with. Make sure every app is connected with the same GitHub account.",
+                  a: "Memories belong to the account you signed in with. Google and GitHub sign-ins are separate accounts, so connecting with the other one opens an empty memory. Make sure every app is connected with the same Google or GitHub account.",
                 },
                 {
                   q: "The assistant ignores CogniCore",
@@ -397,9 +385,13 @@ export default function ConnectPage() {
                   q: "I want to disconnect",
                   a: (
                     <>
-                      Remove CogniCore in your app&apos;s connector settings, then revoke it on GitHub under{" "}
-                      <Path>Settings › Applications › Authorized OAuth Apps</Path>. Disconnecting doesn&apos;t delete
-                      stored memories;{" "}
+                      Remove CogniCore in your app&apos;s connector settings. You can also remove its access in your
+                      Google Account under{" "}
+                      <strong className="font-medium text-ink">
+                        Security › Your connections to third-party apps &amp; services
+                      </strong>
+                      , or on GitHub under <Path>Settings › Applications › Authorized OAuth Apps</Path>. Disconnecting
+                      doesn&apos;t delete stored memories;{" "}
                       <a href={`mailto:${links.email}`} className="text-brand underline underline-offset-[3px]">
                         email us
                       </a>{" "}

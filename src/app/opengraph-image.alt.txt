@@ -1,0 +1,1 @@
+CogniCore - Stop re-explaining yourself to AI. Shared memory for Claude, ChatGPT, Claude Code and Codex.

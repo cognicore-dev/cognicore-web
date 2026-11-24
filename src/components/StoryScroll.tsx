@@ -9,7 +9,7 @@ import { Check } from "./icons";
 const steps = [
   {
     title: "Connect it once",
-    body: "Paste one link into Claude or ChatGPT and sign in with GitHub. Coding agents take two commands. That's the whole setup.",
+    body: "Paste one link into Claude or ChatGPT and sign in with Google or GitHub. Coding agents take two commands. That's the whole setup.",
   },
   {
     title: "Talk the way you already do",

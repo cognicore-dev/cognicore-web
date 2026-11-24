@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/ui";
+import { pageMetadata } from "@/lib/seo";
 import { links, mcp } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Privacy policy",
   description: "What the hosted CogniCore service collects, how it is used, and the choices you have.",
-};
+  path: "/privacy",
+});
 
 /* Mirrors PRIVACY.md in the cognicore-env repository. Update both together. */
 export default function PrivacyPage() {
@@ -13,7 +15,7 @@ export default function PrivacyPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Legal" title="Privacy policy" lead={<>Effective date: 5 November 2026</>} />
+      <PageHeader eyebrow="Legal" title="Privacy policy" lead={<>Effective date: 24 November 2026</>} />
       <div className="wrap py-12">
         <article className="prose-cc max-w-[68ch]">
           <p>
@@ -84,6 +86,14 @@ export default function PrivacyPage() {
             <code>cognicore logout</code> stops it.
           </p>
           <p>
+            <strong>Project context stays on your computer.</strong> <code>.cognicore/context.md</code> is a file in
+            your repository, and each item in it records the date, who added it (your git <code>user.name</code>, or the
+            agent&apos;s name) and the session it came from. Suggested items waiting for you to accept them are kept in{" "}
+            <code>~/.cognicore/mcp/project_suggestions.json</code>, with a short hash of each item you accepted or
+            dismissed so it isn&apos;t suggested again. Neither is uploaded to us. The file reaches other people only if
+            you commit and push it.
+          </p>
+          <p>
             <strong>3. Long conversations, in one case.</strong> Some tools accept the current conversation so they can
             keep it within the AI app&apos;s limits. If a conversation sent this way is longer than about 150,000
             tokens, the older part is compressed into a summary and <strong>saved to your memory</strong>, so it can be
@@ -134,6 +144,16 @@ export default function PrivacyPage() {
               choose; our hosting provider (currently Microsoft Azure), which stores the data and runs the server; and
               Cloudflare, which provides the domain name service for <code>cognicoree.tech</code> and hosts this
               website.
+            </li>
+            <li>
+              <strong>Sarvam AI (India), for synced sessions, when the server has it turned on.</strong> To shorten long
+              synced sessions, our server may send the summary part of a session&apos;s handoff to Sarvam AI to be
+              rewritten. That&apos;s the goal, state, decisions, open tasks, facts and file paths, after secrets are
+              redacted. It is not the transcript. The shorter version replaces it in your account, and every ID, version
+              and path must still match the original. Sarvam&apos;s own privacy policy applies to that request. Sessions
+              you save directly in claude.ai or another app are not sent. The request is sent over an encrypted (HTTPS)
+              connection and obvious secrets such as keys and tokens are removed first; Sarvam receives the remaining
+              text in readable form to produce the summary.
             </li>
             <li>
               <strong>Figma, when you ask.</strong> If you sync a Figma file, the Figma access token you provide is sent
