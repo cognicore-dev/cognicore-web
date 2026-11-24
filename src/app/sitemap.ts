@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
-import { site } from "@/lib/site";
+import { pages, site } from "@/lib/site";
 
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return ["", "/connect", "/developers", "/privacy"].map((path) => ({
+  return pages.map(({ path, updated }) => ({
     url: `${site.url}${path}`,
+    lastModified: updated,
     changeFrequency: "weekly",
     priority: path === "" ? 1 : 0.7,
   }));

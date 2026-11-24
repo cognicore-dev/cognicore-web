@@ -4,8 +4,11 @@ import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { JsonLd } from "@/components/aeo/JsonLd";
+import { organizationLd, websiteLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 import "./globals.css";
+import "./aeo.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,7 +46,7 @@ export const metadata: Metadata = {
     description: site.description,
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: `${site.name} — ${site.tagline}`,
     description: site.description,
   },
@@ -65,6 +68,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <head>
         {/* Scroll reveals only hide content once we know JS will reveal it again. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <JsonLd data={[organizationLd, websiteLd]} />
       </head>
       <body className="flex min-h-dvh flex-col overflow-x-hidden bg-paper font-sans text-ink">
         <a

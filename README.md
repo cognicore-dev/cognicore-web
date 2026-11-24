@@ -14,16 +14,23 @@ Requires Node.js 20.9 or newer.
 
 ## Pages
 
-| Route | Audience | What it covers |
-| --- | --- | --- |
-| `/` | Everyone | What CogniCore does, in plain language |
-| `/connect` | Everyone | Setup for Claude, ChatGPT, Claude Code, Codex, Cursor and VS Code, plus the directory announcement |
-| `/developers` | Developers | Plugin, hosted MCP server, Python library, benchmarks, configuration, CLI |
-| `/privacy` | Everyone | The privacy policy, mirrored from `PRIVACY.md` in the main repo |
+| Route                         | Audience      | What it covers                                                                                     |
+| ----------------------------- | ------------- | -------------------------------------------------------------------------------------------------- |
+| `/`                           | Everyone      | What CogniCore does, in plain language                                                             |
+| `/connect`                    | Everyone      | Setup for Claude, ChatGPT, Claude Code, Codex, Cursor and VS Code, plus the directory announcement |
+| `/developers`                 | Developers    | Plugin, hosted MCP server, Python library, benchmarks, configuration, CLI                          |
+| `/faq`                        | Everyone      | Common questions, with FAQPage structured data from the same list                                  |
+| `/learn`                      | Everyone      | Guides hub, plus one page per guide under `/learn/<slug>`                                          |
+| `/privacy`                    | Everyone      | The privacy policy, mirrored from `PRIVACY.md` in the main repo                                    |
+| `/llms.txt`, `/llms-full.txt` | AI assistants | Plain-text summary, setup and guide list, generated from `site.ts`                                 |
 
 ## Where things live
 
-- `src/lib/site.ts` holds every external URL, the MCP endpoint and the current version. Change them there.
+- `src/lib/site.ts` holds every external URL, the MCP endpoint, the current version, install commands, benchmark
+  figures and the guide list. Change them there. Items under `nextRelease` are on `main` but not yet on PyPI.
+- `src/lib/faq.ts` holds the FAQ text; `src/lib/seo.ts` builds page metadata and JSON-LD.
+- `src/components/aeo/` has the guide components; their motion is in `src/app/aeo.css`.
+- The social card is a static PNG: `node scripts/og-image.mjs` regenerates it.
 - `src/components/ui.tsx` has the shared building blocks (buttons, section headings, steps, doc layout, tables).
 - `src/components/CodeBlock.tsx` has code blocks and the copyable connector URL.
 - Design tokens are in `@theme` in `src/app/globals.css`.

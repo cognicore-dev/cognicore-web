@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CodeBlock } from "@/components/CodeBlock";
+import { JsonLd } from "@/components/aeo/JsonLd";
 import { Callout, DocLayout, DocSection, PageHeader, Table } from "@/components/ui";
-import { links, mcp, site } from "@/lib/site";
+import { breadcrumbLd, pageMetadata, softwareLd } from "@/lib/seo";
+import { bench, install, license, links, mcp, nextRelease, site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Developer documentation",
   description:
     "Install the CogniCore plugin for Claude Code and Codex, use the hosted MCP server, or build on the Python library. Benchmarks, configuration and CLI reference.",
-};
+  path: "/developers",
+});
+
+/** Marks a feature that is on main but not yet in the PyPI release. */
+const Next = () => <em className="text-ink-3">({nextRelease.label})</em>;
 
 const toc = [
   { id: "overview", label: "Overview" },
@@ -31,6 +37,15 @@ const c = (s: string) => <code>{s}</code>;
 export default function DevelopersPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          softwareLd,
+          breadcrumbLd([
+            { name: "Home", path: "" },
+            { name: "Developers", path: "/developers" },
+          ]),
+        ]}
+      />
       <PageHeader
         eyebrow="Developers"
         title="CogniCore documentation"
@@ -38,7 +53,7 @@ export default function DevelopersPage() {
           <>
             Everything behind the product: the local plugin for Claude Code and Codex, the hosted MCP server, and the
             Python library underneath. Current release:{" "}
-            <strong className="font-medium text-ink">v{site.version}</strong> on{" "}
+            <strong className="font-medium text-ink">v{site.version}</strong> ({site.releaseDate}) on{" "}
             <a
               href={links.pypi}
               className="text-brand underline underline-offset-[3px]"
@@ -73,7 +88,7 @@ export default function DevelopersPage() {
               ],
               [
                 <strong key="l">Library</strong>,
-                "Python package for memory, reflection, safety and replay in any agent. No mandatory dependencies.",
+                "Python package for memory, reflection, safety and replay in any agent. Three required dependencies.",
                 "Wherever you point it",
               ],
             ]}
@@ -96,16 +111,26 @@ export default function DevelopersPage() {
         </DocSection>
 
         <DocSection id="install" title="Install the plugin">
-          <p>Requires Python 3.10, 3.11 or 3.12 on Windows, macOS or Linux.</p>
-          <CodeBlock
-            code={`pipx install "cognicore-env[mcp]"   # or: uv tool install "cognicore-env[mcp]"\ncognicore install                   # sets up Claude Code and Codex`}
-          />
+          <p>Requires Python {site.pythonVersions} on Windows, macOS or Linux.</p>
+          <CodeBlock code={`${install.pipx}\n${install.setup}`} />
           <p>
             Restart Claude Code. In Codex, run {c("/hooks")} once and trust the three CogniCore hooks. To set up Codex
             only, run {c("cognicore setup codex")}.
           </p>
           <p>Using Claude Code only? After the {c("pipx")} line, install the plugin from inside Claude Code:</p>
-          <CodeBlock label="claude code" code="/plugin install cognicore --marketplace cognicore-dev/cognicore-env" />
+          <CodeBlock label="claude code" code={`${install.pluginMarketplace}\n${install.plugin}`} />
+          <p>
+            The same marketplace also has {c("cognicore-memory")}, a plugin that connects Claude Code to the hosted
+            server instead of keeping memory locally ({c(install.memoryPlugin)}). Details:{" "}
+            <a href={links.docs.plugin} target="_blank" rel="noreferrer">
+              plugins/cognicore
+            </a>{" "}
+            and{" "}
+            <a href={links.docs.memoryPlugin} target="_blank" rel="noreferrer">
+              plugins/cognicore-memory
+            </a>
+            .
+          </p>
           <h3>Remove</h3>
           <CodeBlock code={`cognicore setup codex --remove   # Codex hooks and AGENTS.md rule`} />
           <p>
@@ -123,7 +148,27 @@ export default function DevelopersPage() {
             <li>
               <strong>A short, useful brief.</strong> The goal, where things stand, open tasks, decisions with their
               reasons, and exact values like ticket IDs, versions and paths. It&apos;s sized to a token budget, and the
-              agent can ask for more sections when it needs them.
+              agent can ask for more sections when it needs them. In the head-to-head benchmark the brief was{" "}
+              {bench.handoff.briefTokens} tokens. The default budget drops from 1,000 to {nextRelease.briefBudget}{" "}
+              tokens, with at most 10 open tasks shown so decisions still fit <Next />.
+            </li>
+            <li>
+              <strong>Project context you curate</strong> <Next />. Session memory is guessed from chat. For what must
+              be right, write it down with {c(`cognicore project set goal "..."`)},{" "}
+              {c(`cognicore project add decision "..." --why "..."`)} and {c(`cognicore project add rule "..."`)}. It
+              goes to {c(".cognicore/context.md")} at the repository root, a plain Markdown file you can edit, review in
+              pull requests and roll back. Every brief puts it first, using at most {nextRelease.projectContextTokens}{" "}
+              of its {nextRelease.briefBudget} tokens. When a session states a decision, a rule or a new goal, the Stop
+              hook suggests it once; only you accept it, with {c("cognicore project accept 1 2")}.
+            </li>
+            <li>
+              <strong>Lessons from mistakes.</strong> {c("cognicore lesson add")} records a mistake, the fix and why;{" "}
+              {c(`cognicore lesson check "<task>"`)} prints at most 3 matching lessons in about 200 tokens, and nothing
+              when none match. Lessons stay local. The{" "}
+              <a href={links.docs.neverTwice} target="_blank" rel="noreferrer">
+                never-twice
+              </a>{" "}
+              skill uses them so an agent checks before acting.
             </li>
             <li>
               <strong>Any agent.</strong> Work saved in Claude Code resumes in Codex, and the other way round. Any MCP
@@ -135,8 +180,9 @@ export default function DevelopersPage() {
               model&apos;s thinking, and it redacts secrets before saving.
             </li>
             <li>
-              <strong>Lean.</strong> The plugin&apos;s MCP server loads 6 tools at about 1,000 tokens per turn, and the
-              hooks inject nothing in a project with no history.
+              <strong>Lean.</strong> The hooks save and resume on their own, so the plugin&apos;s MCP server loads one
+              tool, {c("cognicore_recall")}, at about 230 tokens per turn (6 tools used about 1,240). The hooks inject
+              nothing in a project with no history, and they start in 0.3 seconds instead of 1.3 <Next />.
             </li>
           </ul>
           <p>See exactly what&apos;s stored with the read-only viewer:</p>
@@ -144,7 +190,7 @@ export default function DevelopersPage() {
         </DocSection>
 
         <DocSection id="sync" title="Sync with claude.ai, Desktop and mobile">
-          <p>Optional. Sign in once with GitHub, in the browser:</p>
+          <p>Optional. Sign in once with Google or GitHub, in the browser:</p>
           <CodeBlock code="cognicore login" />
           <p>
             After that, each session saved in Claude Code or Codex is also uploaded to your hosted account, and sessions
@@ -155,6 +201,11 @@ export default function DevelopersPage() {
           <ul>
             <li>The upload runs in the background, so a turn never waits on the network.</li>
             <li>The download at session start gives up after 3 seconds, so working offline is unaffected.</li>
+            <li>
+              A failed upload is retried: each upload also sends any of the 20 most recent sessions the server
+              hasn&apos;t accepted yet. After a network failure, session starts skip the download for 10 minutes{" "}
+              <Next />.
+            </li>
             <li>
               {c("cognicore sync")} syncs now, {c("cognicore sync status")} shows who is signed in,{" "}
               {c("COGNICORE_SYNC=0")} pauses sync and {c("cognicore logout")} turns it off.
@@ -167,7 +218,24 @@ export default function DevelopersPage() {
             head={["Variable", "Effect"]}
             rows={[
               [c("COGNICORE_DATA_DIR"), <>Where memory lives (default {c("~/.cognicore/mcp")})</>],
-              [c("COGNICORE_RESUME_TOKENS"), "Budget for the start-of-session brief (default 1000)"],
+              [
+                c("COGNICORE_RESUME_TOKENS"),
+                <>
+                  Budget for the start-of-session brief (default 1,000; {nextRelease.briefBudget} <Next />)
+                </>,
+              ],
+              [
+                c("COGNICORE_PROJECT_TOKENS"),
+                <>
+                  Share of the brief for project context (default {nextRelease.projectContextTokens}) <Next />
+                </>,
+              ],
+              [
+                c("COGNICORE_SUGGEST=0"),
+                <>
+                  Turn project-context suggestions off <Next />
+                </>,
+              ],
               [c("COGNICORE_AUTO_CAPTURE=0"), "Turn automatic saving off"],
               [c("COGNICORE_AUTO_RESUME=0"), "Turn automatic resuming off"],
               [
@@ -193,9 +261,10 @@ export default function DevelopersPage() {
           <p>A hosted instance is live. There&apos;s nothing to install and no local process to manage.</p>
           <CodeBlock label="endpoint" code={mcp.url} />
           <p>
-            Add it as a custom connector in any MCP client and sign in with GitHub. The server is its own OAuth 2.1
-            authorization server (dynamic client registration, PKCE, rotating refresh tokens), and each GitHub account
-            gets its own SQLite database. Health check:{" "}
+            Add it as a custom connector in any MCP client and sign in with Google or GitHub. The server is its own
+            OAuth 2.1 authorization server (dynamic client registration, PKCE, rotating refresh tokens), and each
+            account gets its own SQLite database. Google and GitHub sign-ins are separate accounts and are never linked.
+            Cursor&apos;s sign-in callbacks are accepted too. Health check:{" "}
             <a href={mcp.health} target="_blank" rel="noreferrer">
               {c("/health")}
             </a>
@@ -243,10 +312,11 @@ export default function DevelopersPage() {
 
         <DocSection id="library" title="Python library">
           <p>
-            Under the plugin is a Python library for persistent memory, reflection and safety in any agent. It has no
-            mandatory dependencies and needs no vector database, embedding server or API key.
+            Under the plugin is a Python library for persistent memory, reflection and safety in any agent. It needs no
+            vector database, embedding server or API key; the only required dependencies are numpy, jsonschema and
+            requests.
           </p>
-          <CodeBlock code="pip install cognicore-env" />
+          <CodeBlock code={install.library} />
           <h3>Quickstart</h3>
           <p>Give any function a memory of its own past runs:</p>
           <CodeBlock
@@ -328,20 +398,37 @@ TaskBrancher(store).branch("task_001", from_step=1, modifications={"policy": "ag
         <DocSection id="benchmarks" title="Benchmarks">
           <h3 className="font-semibold text-ink">Session handoff vs claude-mem</h3>
           <p>
-            Measured on real Claude Code and Codex sessions against claude-mem 15.7.0. In each task, session 1 does part
-            of a job, its transcript is moved out of reach, and a fresh session 2 must finish a deferred follow-up and
-            answer 8 questions. Both systems got every follow-up right.
+            Measured on {bench.handoff.date} on real Claude Code and Codex sessions against claude-mem 15.7.0. In each
+            task, session 1 does part of a job, its transcript is moved out of reach, and a fresh session 2 must finish
+            a deferred follow-up and answer 8 questions. Both systems got every follow-up right. It is a small sample:
+            three tasks, one run each.
           </p>
           <Table
             head={["", "CogniCore", "claude-mem"]}
             rows={[
               ["Hands work from Claude Code to Codex", "Yes", "Yes"],
-              ["New tokens per 3-task benchmark (incl. background)", <strong key="a">53k–60k</strong>, "147k–216k"],
-              ["Memory ready after a session ends", <strong key="b">~1 second</strong>, "70–130 seconds"],
-              ["Brief injected at the next start", <strong key="c">~450 tokens</strong>, "~1,080 tokens"],
+              [
+                "New tokens per 3-task benchmark (incl. background)",
+                <strong key="a">{bench.handoff.newTokensRange}</strong>,
+                bench.handoff.claudeMemNewTokensRange,
+              ],
+              [
+                "Memory ready after a session ends",
+                <strong key="b">{bench.handoff.readyAfter}</strong>,
+                bench.handoff.claudeMemReadyAfter,
+              ],
+              [
+                "Brief size at the next start",
+                <strong key="c">{bench.handoff.briefTokens} tokens</strong>,
+                `${bench.handoff.claudeMemBriefTokens} tokens`,
+              ],
               ["Model calls to save a session", <strong key="d">0</strong>, "One per tool use"],
             ]}
           />
+          <p>
+            Where claude-mem may do better: it observes every tool call in the background, at the token cost above,
+            which is likely an advantage on long, messy sessions this benchmark doesn&apos;t cover.
+          </p>
           <p>
             Method and full results:{" "}
             <a href={links.docs.transferAudit} target="_blank" rel="noreferrer">
@@ -358,11 +445,12 @@ TaskBrancher(store).branch("task_001", from_step=1, modifications={"policy": "ag
           </p>
           <Table
             head={["Context window", "Baseline (zero-shot)", "CogniCore multi-hop", "Δ"]}
-            rows={[
-              ["5 chunks", "78.8%", <strong key="1">85.2%</strong>, "+6.4"],
-              ["10 chunks", "87.2%", <strong key="2">92.8%</strong>, "+5.6"],
-              ["20 chunks", "95.0%", "95.0%", "—"],
-            ]}
+            rows={bench.longMemEval.map((r) => [
+              r.window,
+              r.baseline,
+              r.delta === "—" ? r.multiHop : <strong key={r.window}>{r.multiHop}</strong>,
+              r.delta,
+            ])}
           />
           <p>
             The gain is largest where token efficiency matters; at 20 chunks brute force catches up.{" "}
@@ -405,14 +493,14 @@ import_bundle(
         </DocSection>
 
         <DocSection id="extras" title="Optional extras">
-          <p>The base install has no required dependencies. Add only what you need:</p>
+          <p>The base install needs only numpy, jsonschema and requests. Add only what you need:</p>
           <CodeBlock
             code={`pip install "cognicore-env[mcp]"      # MCP server and plugin
 pip install "cognicore-env[memory]"   # semantic memory (sentence-transformers)
 pip install "cognicore-env[llm]"      # LLM agents (openai client)
 pip install "cognicore-env[rl]"       # RL training (gymnasium, PyTorch)
 pip install "cognicore-env[server]"   # live dashboard (fastapi, uvicorn)
-pip install "cognicore-env[mem0]"     # mem0 transfer bundles
+pip install "cognicore-env[mem0]"     # mem0 transfer bundles (cryptography, mem0ai)
 pip install "cognicore-env[all]"      # everything`}
           />
         </DocSection>
@@ -422,11 +510,28 @@ pip install "cognicore-env[all]"      # everything`}
             code={`cognicore install      # set up Claude Code and Codex
 cognicore login        # sync with your hosted account
 cognicore sync status  # who is signed in
-cognicore list         # list all environments
 cognicore logout       # stop syncing
+cognicore lesson check "<task>"   # lessons that match a task (add, list, forget)
+cognicore list         # list all environments
 cognicore studio       # memory observability studio
 cognicore ui           # NEXUS dashboard`}
           />
+          <p>
+            Coming in the {nextRelease.label}, already on {c("main")}:
+          </p>
+          <CodeBlock
+            code={`cognicore usage        # tokens per Claude Code session and project (--days, --json)
+cognicore project list # curated project context (set, add, remove D2, history, accept 1 2)`}
+          />
+          <p>
+            {c("cognicore usage")} reads Claude Code&apos;s own transcripts, with no model calls, and shows per project
+            the sessions, turns, input tokens, startup context, final context, CogniCore&apos;s brief size and the
+            per-turn saving after {c("/clear")}. See{" "}
+            <Link href="/learn/reduce-claude-code-token-usage" className="text-brand underline underline-offset-[3px]">
+              Cut Claude Code token use
+            </Link>
+            .
+          </p>
           <p>
             If {c("cognicore")} isn&apos;t on your PATH, run {c(`python -c "from cognicore.cli import main; main()"`)}.
           </p>
@@ -460,7 +565,11 @@ cognicore ui           # NEXUS dashboard`}
 
         <DocSection id="project" title="Project">
           <p>
-            CogniCore is open source under the MIT license, built by{" "}
+            CogniCore is open source under the{" "}
+            <a href={links.license} target="_blank" rel="noreferrer">
+              {license.name}
+            </a>
+            , built by{" "}
             <a href="https://www.linkedin.com/in/kaushal-trivedi-4450a8265" target="_blank" rel="noreferrer">
               Kaushal Trivedi
             </a>
