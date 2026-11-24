@@ -9,9 +9,7 @@ export const metadata: Metadata = pageMetadata({
   path: "/privacy",
 });
 
-/* Mirrors PRIVACY.md in the cognicore-env repository. Update both together.
-   Ahead of PRIVACY.md until it is updated: the 24 November 2026 effective date and the last sentence of the
-   Sarvam AI bullet. */
+/* Mirrors PRIVACY.md in the cognicore-env repository. Update both together. */
 export default function PrivacyPage() {
   const mail = <a href={`mailto:${links.email}`}>{links.email}</a>;
 
