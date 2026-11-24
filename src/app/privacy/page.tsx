@@ -9,13 +9,15 @@ export const metadata: Metadata = pageMetadata({
   path: "/privacy",
 });
 
-/* Mirrors PRIVACY.md in the cognicore-env repository. Update both together. */
+/* Mirrors PRIVACY.md in the cognicore-env repository. Update both together.
+   Ahead of PRIVACY.md until it is updated: the 24 November 2026 effective date and the last sentence of the
+   Sarvam AI bullet. */
 export default function PrivacyPage() {
   const mail = <a href={`mailto:${links.email}`}>{links.email}</a>;
 
   return (
     <>
-      <PageHeader eyebrow="Legal" title="Privacy policy" lead={<>Effective date: 5 November 2026</>} />
+      <PageHeader eyebrow="Legal" title="Privacy policy" lead={<>Effective date: 24 November 2026</>} />
       <div className="wrap py-12">
         <article className="prose-cc max-w-[68ch]">
           <p>
@@ -151,7 +153,9 @@ export default function PrivacyPage() {
               rewritten. That&apos;s the goal, state, decisions, open tasks, facts and file paths, after secrets are
               redacted. It is not the transcript. The shorter version replaces it in your account, and every ID, version
               and path must still match the original. Sarvam&apos;s own privacy policy applies to that request. Sessions
-              you save directly in claude.ai or another app are not sent.
+              you save directly in claude.ai or another app are not sent. The request is sent over an encrypted (HTTPS)
+              connection and obvious secrets such as keys and tokens are removed first; Sarvam receives the remaining
+              text in readable form to produce the summary.
             </li>
             <li>
               <strong>Figma, when you ask.</strong> If you sync a Figma file, the Figma access token you provide is sent

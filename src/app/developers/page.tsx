@@ -264,11 +264,7 @@ export default function DevelopersPage() {
             Add it as a custom connector in any MCP client and sign in with Google or GitHub. The server is its own
             OAuth 2.1 authorization server (dynamic client registration, PKCE, rotating refresh tokens), and each
             account gets its own SQLite database. Google and GitHub sign-ins are separate accounts and are never linked.
-            Cursor&apos;s sign-in callbacks are accepted too. Health check:{" "}
-            <a href={mcp.health} target="_blank" rel="noreferrer">
-              {c("/health")}
-            </a>
-            . Step-by-step setup for each app is on the{" "}
+            Cursor&apos;s sign-in callbacks are accepted too. Step-by-step setup for each app is on the{" "}
             <Link href="/connect" className="text-brand underline underline-offset-[3px]">
               Connect
             </Link>{" "}

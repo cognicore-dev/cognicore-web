@@ -367,18 +367,9 @@ export default function ConnectPage() {
                   q: "The connection fails or keeps loading",
                   a: (
                     <>
-                      Check the{" "}
-                      <a
-                        href={mcp.health}
-                        className="text-brand underline underline-offset-[3px]"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        server status
-                      </a>
-                      . If it says <code className="font-mono text-[13px]">&quot;ok&quot;</code>, remove CogniCore from
-                      your connectors and add it again, making sure the URL ends in{" "}
-                      <code className="font-mono text-[13px]">/mcp/stream</code>.
+                      Remove CogniCore from your connectors and add it again, making sure the URL ends in{" "}
+                      <code className="font-mono text-[13px]">/mcp/stream</code>. If it still fails, email us or open an
+                      issue below.
                     </>
                   ),
                 },

@@ -56,7 +56,7 @@ export const links = {
 /** The hosted MCP server that Claude, ChatGPT and other apps connect to. */
 export const mcp = {
   url: "https://mcp.cognicoree.tech/mcp/stream",
-  health: "https://mcp.cognicoree.tech/health",
+  // /health links were removed on purpose until the server's health output is reduced.
   tools: 31,
   signIn: "Google or GitHub",
 } as const;

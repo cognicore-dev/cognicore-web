@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { guides, license, links, mcp, site } from "@/lib/site";
+import { guides, license, links, site } from "@/lib/site";
 import { LogoMark } from "./Logo";
 
 const columns = [
@@ -61,15 +61,6 @@ export function Footer() {
           <p className="mt-3 text-sm leading-relaxed text-ink-3">
             Open-source memory for Claude, ChatGPT and coding agents. {license.short} licensed.
           </p>
-          <a
-            href={mcp.health}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-4 inline-flex items-center gap-2 text-xs text-ink-3 hover:text-ink"
-          >
-            <span className="size-1.5 rounded-full bg-[#3fae5a]" aria-hidden="true" />
-            Hosted server status
-          </a>
         </div>
         {columns.map((col) => (
           <div key={col.heading}>
